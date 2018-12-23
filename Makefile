@@ -6,7 +6,7 @@ BUILD_PATH = build
 BIN_PATH = $(BUILD_PATH)/bin
 
 # executable # 
-BIN_NAME = runner
+BIN_NAME = raytracer
 
 # extensions #
 SRC_EXT = cpp
