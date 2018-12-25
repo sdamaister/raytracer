@@ -1,8 +1,10 @@
-#include "project/Vector.hpp"
+//#include "project/Vector.hpp"
+#include <CPPMImage.h>
 
-int main () {
-  Vector a(1,2), b(2, 1);
-  a = a + b;
-  a.print();
+
+int main ()
+{
+  const CPPMImage lImage;
+  lImage.PrintRGBImage();
   return 0;
 }

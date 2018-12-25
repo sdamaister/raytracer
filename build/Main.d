@@ -1,3 +1,3 @@
-build/Main.o: src/Main.cpp include/project/Vector.hpp
+build/Main.o: src/Main.cpp include/CPPMImage.h
 
-include/project/Vector.hpp:
+include/CPPMImage.h:
