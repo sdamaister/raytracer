@@ -80,6 +80,11 @@ inline CVec3 operator*(const CVec3 a, float t)
     return CVec3(a.x()*t, a.y()*t, a.z()*t);
 }
 
+inline CVec3 operator*(float t, const CVec3 a)
+{
+    return a * t;
+}
+
 inline CVec3 operator/(const CVec3 a, float t)
 {
     return CVec3(a.x()/t, a.y()/t, a.z()/t);
