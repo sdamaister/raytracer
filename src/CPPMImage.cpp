@@ -1,4 +1,5 @@
 #include <CPPMImage.h>
+#include <CVec3.h>
 #include <iostream>
 
 namespace
@@ -16,12 +17,10 @@ void CPPMImage::PrintRGBImage() const
     {
         for (int i = 0; i < lNx; ++i)
         {
-            const float r = float(i) / float(lNx);
-            const float g = float(j) / float(lNy);
-            const float b = 0.2;
-            const int iR = int(255.99 * r);
-            const int iG = int(255.99* g);
-            const int iB = int(255.99 * b);
+            const CVec3 lColor(float(i) / float(lNx), float(j) / float(lNy), 0.2f);
+            const int iR = int(255.99 * lColor[0]);
+            const int iG = int(255.99 * lColor[1]);
+            const int iB = int(255.99 * lColor[2]);
             std::cout << iR << ' ' << iG << ' ' << iB << "\n"; 
         } 
     }
