@@ -13,7 +13,9 @@ namespace
     static const CVec3 kVertical        = CVec3(0.0f, 2.0f, 0.0f);
     static const CVec3 kOrigin          = CVec3(0.0f, 0.0f, 0.0f);
 
-    bool HitSphere(const CVec3& aCenter, float aRadius, const CRay& aRay)
+    static const CVec3 kSphereCenter    = CVec3(0.f, 0.f, -1.f);
+
+    float HitSphere(const CVec3& aCenter, float aRadius, const CRay& aRay)
     {
         const CVec3 OC = aRay.Origin() - aCenter;
         
@@ -23,18 +25,27 @@ namespace
         
         const float lDiscriminant = b*b - 4*a*c;
 
-        return (lDiscriminant > 0.f);
+        if (lDiscriminant < 0.f)
+        {
+            return -1.f;
+        }
+        else
+        {
+            return (-b - sqrt(lDiscriminant) ) / (2.0f * a);
+        }
     }
 
     CVec3 Color(const CRay& aRay)
     {
-        if (HitSphere(CVec3(0, 0, -1), 0.5, aRay))
+        float t = HitSphere(kSphereCenter, 0.5, aRay);
+        if (t > 0.f)
         {
-            return CVec3(1.0f, 0.0f, 0.0f);
+            const CVec3 N = UnitVector(aRay.PointAtParameter(t) - kSphereCenter);
+            return 0.5f * CVec3(N.x() + 1.0f, N.y() + 1.0f, N.z() + 1.0f);
         }
-
+        
         const CVec3 lUnitDirection = UnitVector(aRay.Direction());
-        const float t = 0.5f * (lUnitDirection.y() + 1.0f);
+        t = 0.5f * (lUnitDirection.y() + 1.0f);
 
         return (1.0f - t) * CVec3(1.0f, 1.0f, 1.0f) + t * CVec3(0.5f, 0.7f, 1.0f);    }
 }

@@ -152,7 +152,7 @@ const float k = 1.0f/t;
     return *this;
 }
 
-inline CVec3 UnitVector(const CVec3& v)
+inline CVec3 UnitVector(CVec3 v)
 {
     return v / v.Length(); 
 }

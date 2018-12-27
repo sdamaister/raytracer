@@ -12,7 +12,7 @@ public:
     CVec3 Origin    () const { return mOrigin;    }
     CVec3 Direction () const { return mDirection; } 
     
-    CVec3 PointAtParameter(float t) { return mOrigin + (t * mDirection); }
+    CVec3 PointAtParameter(float t) const { return mOrigin + (t * mDirection); }
 
     CVec3 mOrigin;
     CVec3 mDirection;
