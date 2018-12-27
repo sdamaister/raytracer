@@ -13,8 +13,26 @@ namespace
     static const CVec3 kVertical        = CVec3(0.0f, 2.0f, 0.0f);
     static const CVec3 kOrigin          = CVec3(0.0f, 0.0f, 0.0f);
 
+    bool HitSphere(const CVec3& aCenter, float aRadius, const CRay& aRay)
+    {
+        const CVec3 OC = aRay.Origin() - aCenter;
+        
+        const float a = dot(aRay.Direction(), aRay.Direction());
+        const float b = 2.0f * dot(OC, aRay.Direction());
+        const float c = dot(OC, OC) - (aRadius * aRadius);
+        
+        const float lDiscriminant = b*b - 4*a*c;
+
+        return (lDiscriminant > 0.f);
+    }
+
     CVec3 Color(const CRay& aRay)
     {
+        if (HitSphere(CVec3(0, 0, -1), 0.5, aRay))
+        {
+            return CVec3(1.0f, 0.0f, 0.0f);
+        }
+
         const CVec3 lUnitDirection = UnitVector(aRay.Direction());
         const float t = 0.5f * (lUnitDirection.y() + 1.0f);
 
