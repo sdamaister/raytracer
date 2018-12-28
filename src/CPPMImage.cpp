@@ -18,14 +18,25 @@ namespace
 
     static const int   kWorldSize       = 2;
 
+    CVec3 RandomInUnitSphere()
+    {
+        CVec3 p;
+        do
+        {
+            p = 2.0f *CVec3(drand48(), drand48(), drand48()) - CVec3(1.f, 1.f, 1.f);
+        } while (p.SquaredLength() >= 1.0f);
+
+        return p;
+    }
+
     CVec3 Color(const CRay& aRay, CHitable *aWorld)
     {
         THitRecord lHit;
         // todo. cehck MAXFLOAT problem
-        if (aWorld->Hit(aRay, 0.0, 999999.9f, lHit))
+        if (aWorld->Hit(aRay, 0.0001, 999999.9f, lHit))
         {
-            const CVec3 N = lHit.mNormal; 
-            return 0.5f * CVec3(N.x() + 1.0f, N.y() + 1.0f, N.z() + 1.0f);
+            CVec3 lTarget = lHit.mPoint + lHit.mNormal + RandomInUnitSphere();
+            return 0.5f * Color( CRay(lHit.mPoint, lTarget - lHit.mPoint), aWorld );
         }
         
         const CVec3 lUnitDirection = UnitVector(aRay.Direction());
@@ -64,6 +75,7 @@ void CPPMImage::PrintRGBImage() const
             }
 
             lColor /= float(lNs);
+            lColor  = CVec3(sqrt(lColor[0]), sqrt(lColor[1]), sqrt(lColor[2]));
 
             const int iR = int(255.99 * lColor[0]);
             const int iG = int(255.99 * lColor[1]);
