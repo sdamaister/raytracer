@@ -4,18 +4,15 @@
 #include <CHitableList.h>
 #include <CSphere.h>
 #include <CRay.h>
+#include <CCamera.h>
 #include <math.h>
 #include <iostream>
 
 namespace
 {
-    static const unsigned int kSizeX = 200;
-    static const unsigned int kSizeY = 100;
-
-    static const CVec3 kLowerLeftCorner = CVec3(-2.0f, -1.0f, -1.0f);
-    static const CVec3 kHorizontal      = CVec3(4.0f, 0.0f, 0.0f);
-    static const CVec3 kVertical        = CVec3(0.0f, 2.0f, 0.0f);
-    static const CVec3 kOrigin          = CVec3(0.0f, 0.0f, 0.0f);
+    static const unsigned int kSizeX   = 400;
+    static const unsigned int kSizeY   = 200;
+    static const unsigned int kSamples = 100;
 
     static const CVec3 kSphereCenter    = CVec3(0.f, 0.f, -1.f);
 
@@ -41,6 +38,8 @@ void CPPMImage::PrintRGBImage() const
 {
     const int lNx = kSizeX;
     const int lNy = kSizeY;
+    const int lNs = kSamples;
+
     std::cout << "P3\n" << lNx << ' ' << lNy << "\n255\n";
 
     CHitable *lList[kWorldSize];
@@ -48,16 +47,23 @@ void CPPMImage::PrintRGBImage() const
     lList[1] = new CSphere(CVec3(0.f, -100.5f, -1.f), 100);
 
     CHitable *lWorld = new CHitableList(lList, kWorldSize);
+    CCamera lCamera;
 
     for (int j = lNy - 1; j >= 0; j--)
     {
         for (int i = 0; i < lNx; ++i)
         {
-            const float u = float(i) / float(lNx);
-            const float v = float(j) / float(lNy);
+            CVec3 lColor(0.f, 0.f, 0.f);
+            for(int s = 0; s < lNs; ++s)
+            {
+                const float u = float(i + drand48()) / float(lNx);
+                const float v = float(j + drand48()) / float(lNy);
 
-            const CRay  lRay(kOrigin, kLowerLeftCorner + (u * kHorizontal) + (v * kVertical));
-            const CVec3 lColor = Color(lRay, lWorld);
+                const CRay  lRay = lCamera.GetRay(u, v);
+                lColor          += Color(lRay, lWorld);
+            }
+
+            lColor /= float(lNs);
 
             const int iR = int(255.99 * lColor[0]);
             const int iG = int(255.99 * lColor[1]);
