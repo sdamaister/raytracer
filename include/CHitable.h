@@ -3,11 +3,14 @@
 
 #include <CRay.h>
 
+class CMaterial;
+
 struct THitRecord
 {
-    float t;
-    CVec3 mPoint;
-    CVec3 mNormal;
+    float      t;
+    CVec3      mPoint;
+    CVec3      mNormal;
+    CMaterial* mMaterial;
 };
 
 class CHitable
