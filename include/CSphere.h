@@ -3,18 +3,21 @@
 
 #include <CHitable.h>
 
+class CMaterial;
+
 class CSphere : public CHitable
 {
 public:
     CSphere() {}
-    CSphere(CVec3 aCenter, float aRadius)
-        : mCenter(aCenter), mRadius(aRadius)
+    CSphere(CVec3 aCenter, float aRadius, CMaterial* aMaterial)
+        : mCenter(aCenter), mRadius(aRadius), mMaterial(aMaterial)
     {}
 
     virtual bool Hit(const CRay& aRay, float t_min, float t_max, THitRecord& aHit) const;
 
-    CVec3 mCenter;
-    float mRadius;
+    CVec3      mCenter;
+    float      mRadius;
+    CMaterial* mMaterial;
 };
 
 #endif //_SPHERE_H_

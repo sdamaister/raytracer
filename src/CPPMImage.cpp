@@ -5,6 +5,9 @@
 #include <CSphere.h>
 #include <CRay.h>
 #include <CCamera.h>
+#include <CMaterial.h>
+#include <CLambertian.h>
+#include <CMetal.h>
 #include <math.h>
 #include <fstream>
 #include <RandUtils.h>
@@ -17,27 +20,24 @@ namespace
 
     static const CVec3 kSphereCenter    = CVec3(0.f, 0.f, -1.f);
 
-    static const int   kWorldSize       = 2;
+    static const int   kWorldSize       = 4;
 
-    CVec3 RandomInUnitSphere()
-    {
-        CVec3 p;
-        do
-        {
-            p = 2.0f *CVec3(Rand(), Rand(), Rand()) - CVec3(1.f, 1.f, 1.f);
-        } while (p.SquaredLength() >= 1.0f);
-
-        return p;
-    }
-
-    CVec3 Color(const CRay& aRay, CHitable *aWorld)
+    CVec3 Color(const CRay& aRay, CHitable *aWorld, int aDepth)
     {
         THitRecord lHit;
         // todo. cehck MAXFLOAT problem
         if (aWorld->Hit(aRay, 0.0001f, 999999.9f, lHit))
         {
-            CVec3 lTarget = lHit.mPoint + lHit.mNormal + RandomInUnitSphere();
-            return 0.5f * Color( CRay(lHit.mPoint, lTarget - lHit.mPoint), aWorld );
+            CRay lScattered;
+            CVec3 lAttenuation;
+            if (aDepth < 50 && lHit.mMaterial->Scatter(aRay, lHit, lAttenuation, lScattered))
+            {
+                return lAttenuation * Color(lScattered, aWorld, aDepth + 1);
+            }
+            else
+            {
+                return CVec3(0.f, 0.f, 0.f);
+            }
         }
         
         const CVec3 lUnitDirection = UnitVector(aRay.Direction());
@@ -58,8 +58,14 @@ void CPPMImage::PrintRGBImage() const
         lOutputFile << "P3\n" << lNx << ' ' << lNy << "\n255\n";
 
         CHitable *lList[kWorldSize];
-        lList[0] = new CSphere(CVec3(kSphereCenter), 0.5f);
-        lList[1] = new CSphere(CVec3(0.f, -100.5f, -1.f), 100);
+        CLambertian* lMaterial1 = new CLambertian(CVec3(0.8f, 0.3f, 0.3f));
+        lList[0] = new CSphere(CVec3(kSphereCenter), 0.5f, lMaterial1);
+        CLambertian* lMaterial2 = new CLambertian(CVec3(0.8f, 0.8f, 0.0f));
+        lList[1] = new CSphere(CVec3(0.f, -100.5f, -1.f), 100.0f, lMaterial2);
+        CMetal* lMaterial3 = new CMetal(CVec3(0.8f, 0.6f, 0.2f), 0.3f);
+        lList[2] = new CSphere(CVec3(1.f, 0.f, -1.f), 0.5f, lMaterial3);
+        CMetal* lMaterial4 = new CMetal(CVec3(0.8f, 0.8f, 0.8f), 1.0f);
+        lList[3] = new CSphere(CVec3(-1.f, 0.f, -1.f), 0.5f, lMaterial4);
 
         CHitable *lWorld = new CHitableList(lList, kWorldSize);
         CCamera lCamera;
@@ -75,7 +81,7 @@ void CPPMImage::PrintRGBImage() const
                     const float v = float(j + Rand()) / float(lNy);
 
                     const CRay  lRay = lCamera.GetRay(u, v);
-                    lColor += Color(lRay, lWorld);
+                    lColor += Color(lRay, lWorld, 0);
                 }
 
                 lColor /= float(lNs);
@@ -88,7 +94,17 @@ void CPPMImage::PrintRGBImage() const
             }
         }
 
-        // todo: delete news
+        delete lMaterial1;
+        delete lMaterial2;
+        delete lMaterial3;
+        delete lMaterial4;
+
+        for (int i = 0; i < kWorldSize; ++i)
+        {
+            delete lList[i];
+        }
+
+        delete lWorld;
     }
     else
     {

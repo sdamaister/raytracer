@@ -16,9 +16,10 @@ bool CSphere::Hit(const CRay& aRay, float t_min, float t_max, THitRecord& aHit) 
         float temp = (-b - sqrt(lDiscriminant))/a;
         if (temp < t_max && temp > t_min)
         {
-            aHit.t       = temp;
-            aHit.mPoint  = aRay.PointAtParameter(aHit.t);
-            aHit.mNormal = (aHit.mPoint - mCenter) / mRadius;
+            aHit.t         = temp;
+            aHit.mPoint    = aRay.PointAtParameter(aHit.t);
+            aHit.mNormal   = (aHit.mPoint - mCenter) / mRadius;
+            aHit.mMaterial = mMaterial;
             return true;
         }
         temp = (-b + sqrt(lDiscriminant))/a;
@@ -27,6 +28,7 @@ bool CSphere::Hit(const CRay& aRay, float t_min, float t_max, THitRecord& aHit) 
             aHit.t       = temp;
             aHit.mPoint  = aRay.PointAtParameter(aHit.t);
             aHit.mNormal = (aHit.mPoint - mCenter) / mRadius;
+            aHit.mMaterial = mMaterial;
             return true;
         }
     }
