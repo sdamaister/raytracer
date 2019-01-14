@@ -8,6 +8,7 @@
 #include <CMaterial.h>
 #include <CLambertian.h>
 #include <CMetal.h>
+#include <CDielectric.h>
 #include <math.h>
 #include <fstream>
 #include <RandUtils.h>
@@ -64,7 +65,7 @@ void CPPMImage::PrintRGBImage() const
         lList[1] = new CSphere(CVec3(0.f, -100.5f, -1.f), 100.0f, lMaterial2);
         CMetal* lMaterial3 = new CMetal(CVec3(0.8f, 0.6f, 0.2f), 0.3f);
         lList[2] = new CSphere(CVec3(1.f, 0.f, -1.f), 0.5f, lMaterial3);
-        CMetal* lMaterial4 = new CMetal(CVec3(0.8f, 0.8f, 0.8f), 1.0f);
+        CDielectric* lMaterial4 = new CDielectric(1.5f);
         lList[3] = new CSphere(CVec3(-1.f, 0.f, -1.f), 0.5f, lMaterial4);
 
         CHitable *lWorld = new CHitableList(lList, kWorldSize);

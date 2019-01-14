@@ -4,14 +4,7 @@
 #include <CMaterial.h>
 #include <CVec3.h>
 #include <CRay.h>
-
-namespace
-{
-    CVec3 Reflect(const CVec3& v, const CVec3& n)
-    {
-        return v - 2.0f * dot(v, n) * n;
-    }
-}
+#include <MathUtils.h>
 
 class CMetal : public CMaterial
 {
