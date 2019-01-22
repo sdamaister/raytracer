@@ -18,25 +18,39 @@ public:
         float lNiOverNt;
         aAttenuation = CVec3(1.f, 1.f, 1.f);
         CVec3 lRefracted;
+
+        float lReflectedProb;
+        float lCos;
+
         if (dot(aInRay.Direction(), aHit.mNormal) > 0.f)
         {
             lOutwardNormal = -aHit.mNormal;
             lNiOverNt      = mRefractIdx;
+            lCos           = mRefractIdx * dot(aInRay.Direction(), aHit.mNormal) / aInRay.Direction().Length();
         }
         else
         {
             lOutwardNormal = aHit.mNormal;
             lNiOverNt      = 1.0f / mRefractIdx;
+            lCos           = -dot(aInRay.Direction(), aHit.mNormal) / aInRay.Direction().Length();
         }
 
         if (Refract(aInRay.Direction(), lOutwardNormal, lNiOverNt, lRefracted))
         {
-            aScattered = CRay(aHit.mPoint, lRefracted);
+            lReflectedProb = Schlick(lCos, mRefractIdx);
         }
         else
         {
+            lReflectedProb = 1.0f;
+        }
+
+        if (Rand() < lReflectedProb)
+        {
             aScattered = CRay(aHit.mPoint, lReflected);
-            return false;
+        }
+        else
+        {
+            aScattered = CRay(aHit.mPoint, lRefracted);
         }
 
         return true;

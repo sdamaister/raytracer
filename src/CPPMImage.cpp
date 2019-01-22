@@ -21,7 +21,7 @@ namespace
 
     static const CVec3 kSphereCenter    = CVec3(0.f, 0.f, -1.f);
 
-    static const int   kWorldSize       = 4;
+    static const int   kWorldSize       = 5;
 
     CVec3 Color(const CRay& aRay, CHitable *aWorld, int aDepth)
     {
@@ -67,6 +67,7 @@ void CPPMImage::PrintRGBImage() const
         lList[2] = new CSphere(CVec3(1.f, 0.f, -1.f), 0.5f, lMaterial3);
         CDielectric* lMaterial4 = new CDielectric(1.5f);
         lList[3] = new CSphere(CVec3(-1.f, 0.f, -1.f), 0.5f, lMaterial4);
+        lList[4] = new CSphere(CVec3(-1.f, 0.f, -1.f), -0.45f, lMaterial4);
 
         CHitable *lWorld = new CHitableList(lList, kWorldSize);
         CCamera lCamera;

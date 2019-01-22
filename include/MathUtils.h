@@ -21,4 +21,11 @@ bool Refract(const CVec3& aVec, const CVec3& aNormal, float aNiOverNt, CVec3& aR
     return false;
 }
 
+float Schlick(float aCos, float aRefractIdx)
+{
+    float lR0 = (1.f - aRefractIdx) / (1.f + aRefractIdx);
+    lR0 = lR0 * lR0;
+    return lR0 + (1.f - lR0) * pow((1.f - aCos), 5.f);
+}
+
 #endif // _MATH_UTILS_H_
